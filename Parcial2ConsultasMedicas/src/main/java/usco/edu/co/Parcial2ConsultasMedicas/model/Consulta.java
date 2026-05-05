@@ -19,7 +19,9 @@ public class Consulta {
 
     private String motivoConsulta;
 
-    private Integer numeroConsultorio;
+    @ManyToOne
+    @JoinColumn(name = "consultorio_id", nullable = false)
+    private Consultorio consultorio;
 
     private LocalTime horaInicio;
 
@@ -54,11 +56,7 @@ public class Consulta {
     }
 
     public Integer getNumeroConsultorio() {
-        return numeroConsultorio;
-    }
-
-    public void setNumeroConsultorio(Integer numeroConsultorio) {
-        this.numeroConsultorio = numeroConsultorio;
+        return consultorio == null ? null : consultorio.getNumero();
     }
 
     public LocalTime getHoraInicio() {
@@ -83,6 +81,14 @@ public class Consulta {
 
     public void setMedico(Medico medico) {
         this.medico = medico;
+    }
+
+    public Consultorio getConsultorio() {
+        return consultorio;
+    }
+
+    public void setConsultorio(Consultorio consultorio) {
+        this.consultorio = consultorio;
     }
 
     public Paciente getPaciente() {

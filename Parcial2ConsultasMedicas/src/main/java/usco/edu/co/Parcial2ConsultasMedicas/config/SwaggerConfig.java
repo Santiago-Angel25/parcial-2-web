@@ -16,8 +16,8 @@ public class SwaggerConfig {
                         .version("1.0")
                         .description("Servicios web para administrar consultas medicas con seguridad por roles.").
                 termsOfService("http://algo.com/terminos")
-                .contact(new io.swagger.v3.oas.models.info.Contact().name("Diego Carvajal")
-                        .email("diego.carvajal@usco.edu.co").url("http://algo.com"))
+                .contact(new io.swagger.v3.oas.models.info.Contact().name("Santiago Angel Sanchez")
+                        .email("u20242227740@usco.edu.co").url("http://algo.com"))
                 .license(new io.swagger.v3.oas.models.info.License().name("Licencia MIT")
                         .url("http://opensource.org/licenses/MIT")));
     }

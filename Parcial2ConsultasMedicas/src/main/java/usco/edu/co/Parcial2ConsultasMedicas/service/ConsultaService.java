@@ -9,10 +9,12 @@ import org.springframework.transaction.annotation.Transactional;
 import usco.edu.co.Parcial2ConsultasMedicas.dto.ConsultaRequest;
 import usco.edu.co.Parcial2ConsultasMedicas.dto.HorarioRequest;
 import usco.edu.co.Parcial2ConsultasMedicas.model.Consulta;
+import usco.edu.co.Parcial2ConsultasMedicas.model.Consultorio;
 import usco.edu.co.Parcial2ConsultasMedicas.model.Medico;
 import usco.edu.co.Parcial2ConsultasMedicas.model.Paciente;
 import usco.edu.co.Parcial2ConsultasMedicas.model.Usuario;
 import usco.edu.co.Parcial2ConsultasMedicas.repository.ConsultaRepository;
+import usco.edu.co.Parcial2ConsultasMedicas.repository.ConsultorioRepository;
 import usco.edu.co.Parcial2ConsultasMedicas.repository.MedicoRepository;
 import usco.edu.co.Parcial2ConsultasMedicas.repository.PacienteRepository;
 import usco.edu.co.Parcial2ConsultasMedicas.repository.UsuarioRepository;
@@ -21,17 +23,20 @@ import usco.edu.co.Parcial2ConsultasMedicas.repository.UsuarioRepository;
 public class ConsultaService {
 
     private final ConsultaRepository consultaRepository;
+    private final ConsultorioRepository consultorioRepository;
     private final MedicoRepository medicoRepository;
     private final PacienteRepository pacienteRepository;
     private final UsuarioRepository usuarioRepository;
 
     public ConsultaService(
             ConsultaRepository consultaRepository,
+            ConsultorioRepository consultorioRepository,
             MedicoRepository medicoRepository,
             PacienteRepository pacienteRepository,
             UsuarioRepository usuarioRepository
     ) {
         this.consultaRepository = consultaRepository;
+        this.consultorioRepository = consultorioRepository;
         this.medicoRepository = medicoRepository;
         this.pacienteRepository = pacienteRepository;
         this.usuarioRepository = usuarioRepository;
@@ -85,7 +90,7 @@ public class ConsultaService {
         LocalTime horaInicio = LocalTime.parse(request.getHoraInicio());
         LocalTime horaFin = LocalTime.parse(request.getHoraFin());
         validarHorario(horaInicio, horaFin);
-        validarCruces(id, consulta.getNumeroConsultorio(), consulta.getMedico(), horaInicio, horaFin);
+        validarCruces(id, consulta.getConsultorio(), consulta.getMedico(), horaInicio, horaFin);
 
         consulta.setHoraInicio(horaInicio);
         consulta.setHoraFin(horaFin);
@@ -97,17 +102,19 @@ public class ConsultaService {
         LocalTime horaFin = LocalTime.parse(request.getHoraFin());
         validarHorario(horaInicio, horaFin);
         validarConsultorio(request.getNumeroConsultorio());
+        Consultorio consultorio = consultorioRepository.findByNumero(request.getNumeroConsultorio())
+                .orElseThrow(() -> new EntityNotFoundException("Consultorio no encontrado"));
 
         Medico medico = medicoRepository.findById(request.getMedicoId())
                 .orElseThrow(() -> new EntityNotFoundException("Medico no encontrado"));
         Paciente paciente = pacienteRepository.findById(request.getPacienteId())
                 .orElseThrow(() -> new EntityNotFoundException("Paciente no encontrado"));
 
-        validarCruces(consulta.getId(), request.getNumeroConsultorio(), medico, horaInicio, horaFin);
+        validarCruces(consulta.getId(), consultorio, medico, horaInicio, horaFin);
 
         consulta.setNombrePaciente(request.getNombrePaciente().trim());
         consulta.setMotivoConsulta(request.getMotivoConsulta().trim());
-        consulta.setNumeroConsultorio(request.getNumeroConsultorio());
+        consulta.setConsultorio(consultorio);
         consulta.setHoraInicio(horaInicio);
         consulta.setHoraFin(horaFin);
         consulta.setMedico(medico);
@@ -126,7 +133,7 @@ public class ConsultaService {
         }
     }
 
-    private void validarCruces(Long consultaId, Integer consultorio, Medico medico, LocalTime horaInicio, LocalTime horaFin) {
+    private void validarCruces(Long consultaId, Consultorio consultorio, Medico medico, LocalTime horaInicio, LocalTime horaFin) {
         for (Consulta existente : consultaRepository.findAll()) {
             if (consultaId != null && consultaId.equals(existente.getId())) {
                 continue;
@@ -139,7 +146,7 @@ public class ConsultaService {
                 continue;
             }
 
-            if (existente.getNumeroConsultorio().equals(consultorio)) {
+            if (existente.getConsultorio().getId().equals(consultorio.getId())) {
                 throw new IllegalArgumentException("El consultorio ya tiene una consulta en ese horario");
             }
 
@@ -165,4 +172,3 @@ public class ConsultaService {
                 .orElseThrow(() -> new EntityNotFoundException("Paciente no encontrado para el usuario actual"));
     }
 }
-

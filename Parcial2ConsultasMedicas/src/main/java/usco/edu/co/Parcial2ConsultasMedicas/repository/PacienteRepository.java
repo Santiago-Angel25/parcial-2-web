@@ -7,5 +7,6 @@ import usco.edu.co.Parcial2ConsultasMedicas.model.Usuario;
 
 public interface PacienteRepository extends JpaRepository<Paciente, Long> {
     Optional<Paciente> findByUsuario(Usuario usuario);
+    Optional<Paciente> findByDocumento(String documento);
+    boolean existsByDocumento(String documento);
 }
-

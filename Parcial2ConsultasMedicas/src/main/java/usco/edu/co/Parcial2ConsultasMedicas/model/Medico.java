@@ -16,6 +16,8 @@ public class Medico {
 
     private String nombre;
 
+    private String apellido;
+
     private String especialidad;
 
     @OneToOne
@@ -30,12 +32,35 @@ public class Medico {
         return nombre;
     }
 
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
+
+    public String getApellido() {
+        return apellido;
+    }
+
+    public void setApellido(String apellido) {
+        this.apellido = apellido;
+    }
+
+    public String getNombreCompleto() {
+        return (nombre + " " + apellido).trim();
+    }
+
     public String getEspecialidad() {
         return especialidad;
+    }
+
+    public void setEspecialidad(String especialidad) {
+        this.especialidad = especialidad;
     }
 
     public Usuario getUsuario() {
         return usuario;
     }
-}
 
+    public void setUsuario(Usuario usuario) {
+        this.usuario = usuario;
+    }
+}

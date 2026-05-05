@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Registro Paciente</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link th:href="@{/css/estilos.css}" rel="stylesheet">
+</head>
+<body>
+<div class="login-card">
+    <div class="login-left">
+        <h3 class="mb-4 text-center">Registro Paciente</h3>
+
+        <form th:action="@{/registro}" th:object="${pacienteRegistroRequest}" method="post" novalidate>
+            <div th:if="${errorGeneral}" class="alert alert-danger py-2" th:text="${errorGeneral}"></div>
+
+            <div class="mb-3">
+                <input type="text" th:field="*{nombre}" class="form-control" th:classappend="${#fields.hasErrors('nombre')} ? 'is-invalid'" placeholder="Nombre completo" maxlength="60" required>
+                <div class="invalid-feedback" th:if="${#fields.hasErrors('nombre')}" th:errors="*{nombre}"></div>
+            </div>
+            <div class="mb-3">
+                <input type="text" th:field="*{documento}" class="form-control" th:classappend="${#fields.hasErrors('documento')} ? 'is-invalid'" placeholder="Documento" maxlength="20" required>
+                <div class="invalid-feedback" th:if="${#fields.hasErrors('documento')}" th:errors="*{documento}"></div>
+            </div>
+            <div class="mb-3">
+                <input type="text" th:field="*{username}" class="form-control" th:classappend="${#fields.hasErrors('username')} ? 'is-invalid'" placeholder="Usuario" maxlength="30" required>
+                <div class="invalid-feedback" th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></div>
+            </div>
+            <div class="mb-3">
+                <input type="password" th:field="*{password}" class="form-control" th:classappend="${#fields.hasErrors('password')} ? 'is-invalid'" placeholder="Contrasena" maxlength="60" required>
+                <div class="invalid-feedback" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></div>
+            </div>
+            <div class="d-grid">
+                <button type="submit" class="btn btn-login">Registrarme</button>
+            </div>
+            <div class="text-center mt-3">
+                <a th:href="@{/login}" class="text-white">Volver al login</a>
+            </div>
+        </form>
+    </div>
+</div>
+</body>
+</html>

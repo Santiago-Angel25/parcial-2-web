@@ -24,8 +24,16 @@
                 <button type="submit" class="btn btn-login">Ingresar</button>
             </div>
 
+            <div class="text-center mt-3">
+                <a th:href="@{/registro}" class="text-white">Registrarme como paciente</a>
+            </div>
+
             <div th:if="${param.error}" class="text-danger mt-3 text-center">
                 Usuario o contrasena incorrectos
+            </div>
+
+            <div th:if="${param.registrado}" class="text-success mt-3 text-center">
+                Registro exitoso, ya puede iniciar sesion
             </div>
 
             <div th:if="${param.logout}" class="text-success mt-3 text-center">
@@ -36,4 +44,3 @@
 </div>
 </body>
 </html>
-

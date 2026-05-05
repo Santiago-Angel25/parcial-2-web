@@ -19,12 +19,13 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/css/**", "/js/**", "/images/**", "/swagger-ui/**", "/swagger-ui.html", "/v3/api-docs/**").permitAll()
+                        .requestMatchers("/css/**", "/js/**", "/images/**", "/registro", "/swagger-ui/**", "/swagger-ui.html", "/v3/api-docs/**").permitAll()
                         .requestMatchers("/administrador/**").hasRole("ADMINISTRADOR")
                         .requestMatchers("/medico/**").hasRole("MEDICO")
                         .requestMatchers("/paciente/**").hasRole("PACIENTE")
                         .requestMatchers("/api/consultas/mis-medico").hasRole("MEDICO")
                         .requestMatchers("/api/consultas/mis-paciente", "/api/consultas/*/horario").hasRole("PACIENTE")
+                        .requestMatchers("/api/medicos/**", "/api/pacientes/buscar").hasRole("ADMINISTRADOR")
                         .requestMatchers("/api/consultas/**").hasRole("ADMINISTRADOR")
                         .anyRequest().authenticated()
                 )
@@ -71,4 +72,3 @@ public class SecurityConfig {
         return PasswordEncoderFactories.createDelegatingPasswordEncoder();
     }
 }
-

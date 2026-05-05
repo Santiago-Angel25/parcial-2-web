@@ -5,6 +5,7 @@
 -- La aplicacion crea las tablas con JPA:
 -- spring.jpa.hibernate.ddl-auto=update
 -- Ejecute primero la app una vez y luego corra estos inserts.
+-- Estructura normalizada: roles, usuarios, medicos, pacientes, consultorios y consultas son tablas independientes.
 
 INSERT INTO roles (name)
 VALUES
@@ -55,11 +56,19 @@ VALUES
     ('Andres Lopez', '1080123456', (SELECT user_id FROM users WHERE username = 'andreslopez'))
 ON CONFLICT (usuario_id) DO NOTHING;
 
-INSERT INTO consulta (nombre_paciente, motivo_consulta, numero_consultorio, hora_inicio, hora_fin, medico_id, paciente_id)
+INSERT INTO consultorio (numero)
 VALUES
-    ('Juan Perez', 'Control general', 1, '07:00:00', '08:00:00',
+    (1), (2), (3), (4), (5),
+    (6), (7), (8), (9), (10),
+    (11), (12), (13), (14), (15),
+    (16), (17), (18), (19), (20)
+ON CONFLICT (numero) DO NOTHING;
+
+INSERT INTO consulta (nombre_paciente, motivo_consulta, consultorio_id, hora_inicio, hora_fin, medico_id, paciente_id)
+VALUES
+    ('Juan Perez', 'Control general', (SELECT id FROM consultorio WHERE numero = 1), '07:00:00', '08:00:00',
      (SELECT id FROM medico WHERE nombre = 'Ana Gomez'), (SELECT id FROM paciente WHERE nombre = 'Juan Perez')),
-    ('Sofia Castro', 'Dolor de garganta', 2, '08:00:00', '09:00:00',
+    ('Sofia Castro', 'Dolor de garganta', (SELECT id FROM consultorio WHERE numero = 2), '08:00:00', '09:00:00',
      (SELECT id FROM medico WHERE nombre = 'Carlos Ruiz'), (SELECT id FROM paciente WHERE nombre = 'Sofia Castro')),
-    ('Andres Lopez', 'Revision de piel', 3, '09:00:00', '10:00:00',
+    ('Andres Lopez', 'Revision de piel', (SELECT id FROM consultorio WHERE numero = 3), '09:00:00', '10:00:00',
      (SELECT id FROM medico WHERE nombre = 'Laura Mora'), (SELECT id FROM paciente WHERE nombre = 'Andres Lopez'));

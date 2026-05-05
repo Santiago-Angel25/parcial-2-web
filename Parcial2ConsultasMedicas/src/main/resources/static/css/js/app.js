@@ -1,5 +1,9 @@
 const regex = {
     nombrePaciente: /^[A-Za-z0-9 ]{1,40}$/,
+    nombreMedico: /^[A-Za-z ]{1,60}$/,
+    texto60: /^[\s\S]{1,60}$/,
+    username: /^[A-Za-z0-9]{1,30}$/,
+    documento: /^[0-9]{1,20}$/,
     motivoConsulta: /^[\s\S]{1,100}$/,
     consultorio: /^([1-9]|1[0-9]|20)$/,
     hora: /^([01]\d|2[0-3]):[0-5]\d$/
@@ -91,7 +95,7 @@ function validarConsulta(formulario) {
     }
 
     if (!datos.pacienteId) {
-        marcarError(formulario.pacienteId, "Seleccione un paciente.");
+        marcarError(formulario.documentoPaciente, "Busque y seleccione un paciente registrado.");
         valido = false;
     }
 
@@ -140,6 +144,12 @@ function configurarFormularioConsulta() {
         limpiarErrores(formulario);
         formulario.reset();
         formulario.elements["id"].value = "";
+        formulario.pacienteId.value = "";
+        const resultado = document.getElementById("resultadoPaciente");
+        if (resultado) {
+            resultado.textContent = "";
+            resultado.className = "form-text";
+        }
 
         const boton = event.relatedTarget;
 
@@ -157,6 +167,11 @@ function configurarFormularioConsulta() {
         formulario.horaFin.value = boton.dataset.fin;
         formulario.medicoId.value = boton.dataset.medico;
         formulario.pacienteId.value = boton.dataset.paciente;
+        formulario.documentoPaciente.value = "Paciente ya asignado";
+        if (resultado) {
+            resultado.textContent = "Paciente seleccionado para esta consulta.";
+            resultado.className = "form-text text-success";
+        }
     });
 
     formulario.addEventListener("submit", async event => {
@@ -177,6 +192,147 @@ function configurarFormularioConsulta() {
         } catch (error) {
             alert(error.message);
         }
+    });
+}
+
+function configurarBusquedaPaciente() {
+    const boton = document.getElementById("btnBuscarPaciente");
+    const formulario = document.getElementById("formConsulta");
+    const resultado = document.getElementById("resultadoPaciente");
+
+    if (!boton || !formulario || !resultado) {
+        return;
+    }
+
+    boton.addEventListener("click", async () => {
+        limpiarErrores(formulario);
+        formulario.pacienteId.value = "";
+        resultado.textContent = "";
+        resultado.className = "form-text";
+
+        const documento = formulario.documentoPaciente.value.trim();
+        if (!regex.documento.test(documento)) {
+            marcarError(formulario.documentoPaciente, "Ingrese un documento numerico valido.");
+            return;
+        }
+
+        try {
+            const paciente = await enviarJson(`/api/pacientes/buscar?documento=${encodeURIComponent(documento)}`, "GET");
+            formulario.pacienteId.value = paciente.id;
+            formulario.nombrePaciente.value = paciente.nombre;
+            resultado.textContent = `Se encontro: ${paciente.nombre} - documento ${paciente.documento}`;
+            resultado.className = "form-text text-success";
+        } catch (error) {
+            resultado.textContent = "No se encontro un paciente con ese documento.";
+            resultado.className = "form-text text-danger";
+        }
+    });
+}
+
+function cuerpoDesdeFormularioMedico(formulario) {
+    return {
+        nombre: formulario.nombre.value.trim(),
+        especialidad: formulario.especialidad.value.trim(),
+        username: formulario.username.value.trim(),
+        password: formulario.password.value
+    };
+}
+
+function validarMedico(formulario) {
+    limpiarErrores(formulario);
+
+    const datos = cuerpoDesdeFormularioMedico(formulario);
+    const esEdicion = Boolean(formulario.elements["id"].value);
+    let valido = true;
+
+    if (!regex.nombreMedico.test(datos.nombre)) {
+        marcarError(formulario.nombre, "Use solo letras y espacios. Maximo 60 caracteres.");
+        valido = false;
+    }
+
+    if (!regex.texto60.test(datos.especialidad)) {
+        marcarError(formulario.especialidad, "La especialidad es obligatoria y maximo de 60 caracteres.");
+        valido = false;
+    }
+
+    if (!regex.username.test(datos.username)) {
+        marcarError(formulario.username, "Use solo letras y numeros. Maximo 30 caracteres.");
+        valido = false;
+    }
+
+    if (!esEdicion && !datos.password.trim()) {
+        marcarError(formulario.password, "La contrasena es obligatoria al crear un medico.");
+        valido = false;
+    }
+
+    return valido ? datos : null;
+}
+
+function configurarFormularioMedico() {
+    const formulario = document.getElementById("formMedico");
+    const modal = document.getElementById("modalMedico");
+
+    if (!formulario || !modal) {
+        return;
+    }
+
+    modal.addEventListener("show.bs.modal", event => {
+        limpiarErrores(formulario);
+        formulario.reset();
+        formulario.elements["id"].value = "";
+        formulario.username.disabled = false;
+
+        const boton = event.relatedTarget;
+        if (!boton || !boton.classList.contains("btn-editar-medico")) {
+            modal.querySelector(".modal-title").textContent = "Crear Medico";
+            return;
+        }
+
+        modal.querySelector(".modal-title").textContent = "Editar Medico";
+        formulario.elements["id"].value = boton.dataset.id;
+        formulario.nombre.value = boton.dataset.nombre;
+        formulario.especialidad.value = boton.dataset.especialidad;
+        formulario.username.value = boton.dataset.username;
+        formulario.username.disabled = true;
+    });
+
+    formulario.addEventListener("submit", async event => {
+        event.preventDefault();
+
+        const datos = validarMedico(formulario);
+        if (!datos) {
+            return;
+        }
+
+        const id = formulario.elements["id"].value;
+        const url = id ? `/api/medicos/${id}` : "/api/medicos";
+        const metodo = id ? "PUT" : "POST";
+
+        try {
+            await enviarJson(url, metodo, datos);
+            window.location.reload();
+        } catch (error) {
+            alert(error.message);
+        }
+    });
+}
+
+function configurarEliminacionMedico() {
+    document.querySelectorAll(".btn-eliminar-medico").forEach(boton => {
+        boton.addEventListener("click", async () => {
+            const confirmado = confirm("Desea eliminar este medico?");
+
+            if (!confirmado) {
+                return;
+            }
+
+            try {
+                await enviarJson(`/api/medicos/${boton.dataset.id}`, "DELETE");
+                window.location.reload();
+            } catch (error) {
+                alert(error.message);
+            }
+        });
     });
 }
 
@@ -244,6 +400,9 @@ function configurarFormularioHorario() {
 
 document.addEventListener("DOMContentLoaded", () => {
     configurarFormularioConsulta();
+    configurarBusquedaPaciente();
     configurarEliminacionConsulta();
+    configurarFormularioMedico();
+    configurarEliminacionMedico();
     configurarFormularioHorario();
 });

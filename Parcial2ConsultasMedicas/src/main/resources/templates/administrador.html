@@ -14,6 +14,8 @@
             <hr>
             <a href="#">Consultas</a>
             <a href="#" data-bs-toggle="modal" data-bs-target="#modalConsulta">Crear Consulta</a>
+            <a href="#medicos">Medicos</a>
+            <a href="#" data-bs-toggle="modal" data-bs-target="#modalMedico">Crear Medico</a>
             <a th:href="@{/swagger-ui/index.html}" target="_blank">Swagger API</a>
             <hr>
             <a th:href="@{/logout}">Cerrar sesion</a>
@@ -94,6 +96,50 @@
                     </table>
                 </div>
             </div>
+
+            <div id="medicos" class="card card-custom p-4 mt-4">
+                <div class="d-flex justify-content-between mb-3">
+                    <h5>Medicos</h5>
+                    <button class="btn btn-main" data-bs-toggle="modal" data-bs-target="#modalMedico">+ Nuevo</button>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                        <tr>
+                            <th>Nombre</th>
+                            <th>Especialidad</th>
+                            <th>Usuario</th>
+                            <th>Acciones</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="medico : ${medicos}">
+                            <td th:text="${medico.nombre}"></td>
+                            <td th:text="${medico.especialidad}"></td>
+                            <td th:text="${medico.usuario.username}"></td>
+                            <td>
+                                <button type="button"
+                                        class="btn btn-sm btn-warning btn-editar-medico"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#modalMedico"
+                                        th:attr="data-id=${medico.id},
+                                                 data-nombre=${medico.nombre},
+                                                 data-especialidad=${medico.especialidad},
+                                                 data-username=${medico.usuario.username}">
+                                    Editar
+                                </button>
+                                <button type="button"
+                                        class="btn btn-sm btn-danger btn-eliminar-medico"
+                                        th:attr="data-id=${medico.id}">
+                                    Eliminar
+                                </button>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
     </div>
 </div>
@@ -117,7 +163,13 @@
                         </div>
                         <div class="col-md-6 mb-3">
                             <label>Numero de consultorio</label>
-                            <input type="number" name="numeroConsultorio" class="form-control" min="1" max="20" required>
+                            <select name="numeroConsultorio" class="form-control" required>
+                                <option value="">Seleccione</option>
+                                <option th:each="numero : ${#numbers.sequence(1, 20)}"
+                                        th:value="${numero}"
+                                        th:text="${numero}">
+                                </option>
+                            </select>
                             <div class="invalid-feedback"></div>
                         </div>
                         <div class="col-md-12 mb-3">
@@ -144,13 +196,58 @@
                             <div class="invalid-feedback"></div>
                         </div>
                         <div class="col-md-6 mb-3">
-                            <label>Paciente usuario</label>
-                            <select name="pacienteId" class="form-control" required>
-                                <option value="">Seleccione</option>
-                                <option th:each="paciente : ${pacientes}" th:value="${paciente.id}" th:text="${paciente.nombre}"></option>
-                            </select>
+                            <label>Buscar paciente por documento</label>
+                            <input type="hidden" name="pacienteId">
+                            <div class="input-group">
+                                <input type="text" name="documentoPaciente" class="form-control" maxlength="20" required>
+                                <button type="button" class="btn btn-main" id="btnBuscarPaciente" title="Buscar paciente">🔍</button>
+                            </div>
+                            <small id="resultadoPaciente" class="form-text"></small>
                             <div class="invalid-feedback"></div>
                         </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-main">Guardar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalMedico" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header" style="background-color:#0d3b66; color:white;">
+                <h5 class="modal-title">Crear Medico</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+
+            <form id="formMedico" novalidate>
+                <input type="hidden" name="id">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label>Nombre</label>
+                        <input type="text" name="nombre" class="form-control" maxlength="60" required>
+                        <div class="invalid-feedback"></div>
+                    </div>
+                    <div class="mb-3">
+                        <label>Especialidad</label>
+                        <input type="text" name="especialidad" class="form-control" maxlength="60" required>
+                        <div class="invalid-feedback"></div>
+                    </div>
+                    <div class="mb-3">
+                        <label>Usuario</label>
+                        <input type="text" name="username" class="form-control" maxlength="30" required>
+                        <div class="invalid-feedback"></div>
+                    </div>
+                    <div class="mb-3">
+                        <label>Contrasena</label>
+                        <input type="password" name="password" class="form-control" maxlength="60">
+                        <small class="form-text text-muted">Obligatoria al crear. En edicion puede quedar vacia.</small>
+                        <div class="invalid-feedback"></div>
                     </div>
                 </div>
 
@@ -167,4 +264,3 @@
 <script th:src="@{/css/js/app.js}"></script>
 </body>
 </html>
-
