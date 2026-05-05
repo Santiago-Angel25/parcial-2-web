@@ -47,7 +47,9 @@ public class Paciente {
     }
 
     public String getNombreCompleto() {
-        return (nombre + " " + apellido).trim();
+        String nombres = nombre == null ? "" : nombre;
+        String apellidos = apellido == null ? "" : apellido;
+        return (nombres + " " + apellidos).trim();
     }
 
     public String getDocumento() {

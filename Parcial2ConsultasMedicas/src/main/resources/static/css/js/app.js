@@ -1,6 +1,8 @@
 const regex = {
     nombrePaciente: /^[A-Za-z0-9 ]{1,40}$/,
     nombreMedico: /^[A-Za-z ]{1,60}$/,
+    apellido: /^[A-Za-z ]{1,60}$/,
+    especialidad: /^(Medicina general|Pediatria|Dermatologia|Cardiologia|Odontologia|Ginecologia|Ortopedia)$/,
     texto60: /^[\s\S]{1,60}$/,
     username: /^[A-Za-z0-9]{1,30}$/,
     documento: /^[0-9]{1,20}$/,
@@ -219,8 +221,8 @@ function configurarBusquedaPaciente() {
         try {
             const paciente = await enviarJson(`/api/pacientes/buscar?documento=${encodeURIComponent(documento)}`, "GET");
             formulario.pacienteId.value = paciente.id;
-            formulario.nombrePaciente.value = paciente.nombre;
-            resultado.textContent = `Se encontro: ${paciente.nombre} - documento ${paciente.documento}`;
+            formulario.nombrePaciente.value = paciente.nombreCompleto;
+            resultado.textContent = `Se encontro: ${paciente.nombreCompleto} - documento ${paciente.documento}`;
             resultado.className = "form-text text-success";
         } catch (error) {
             resultado.textContent = "No se encontro un paciente con ese documento.";
@@ -232,6 +234,7 @@ function configurarBusquedaPaciente() {
 function cuerpoDesdeFormularioMedico(formulario) {
     return {
         nombre: formulario.nombre.value.trim(),
+        apellido: formulario.apellido.value.trim(),
         especialidad: formulario.especialidad.value.trim(),
         username: formulario.username.value.trim(),
         password: formulario.password.value
@@ -250,8 +253,13 @@ function validarMedico(formulario) {
         valido = false;
     }
 
-    if (!regex.texto60.test(datos.especialidad)) {
-        marcarError(formulario.especialidad, "La especialidad es obligatoria y maximo de 60 caracteres.");
+    if (!regex.apellido.test(datos.apellido)) {
+        marcarError(formulario.apellido, "Use solo letras y espacios. Maximo 60 caracteres.");
+        valido = false;
+    }
+
+    if (!regex.especialidad.test(datos.especialidad)) {
+        marcarError(formulario.especialidad, "Seleccione una especialidad valida.");
         valido = false;
     }
 
@@ -291,6 +299,7 @@ function configurarFormularioMedico() {
         modal.querySelector(".modal-title").textContent = "Editar Medico";
         formulario.elements["id"].value = boton.dataset.id;
         formulario.nombre.value = boton.dataset.nombre;
+        formulario.apellido.value = boton.dataset.apellido;
         formulario.especialidad.value = boton.dataset.especialidad;
         formulario.username.value = boton.dataset.username;
         formulario.username.disabled = true;

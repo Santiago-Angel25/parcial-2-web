@@ -69,7 +69,7 @@
                                 <span th:text="${consulta.horaInicio}"></span> -
                                 <span th:text="${consulta.horaFin}"></span>
                             </td>
-                            <td th:text="${consulta.medico.nombre}"></td>
+                            <td th:text="${consulta.medico.nombreCompleto}"></td>
                             <td>
                                 <button type="button"
                                         class="btn btn-sm btn-warning btn-editar-consulta"
@@ -107,7 +107,8 @@
                     <table class="table table-hover">
                         <thead>
                         <tr>
-                            <th>Nombre</th>
+                            <th>Nombres</th>
+                            <th>Apellidos</th>
                             <th>Especialidad</th>
                             <th>Usuario</th>
                             <th>Acciones</th>
@@ -116,6 +117,7 @@
                         <tbody>
                         <tr th:each="medico : ${medicos}">
                             <td th:text="${medico.nombre}"></td>
+                            <td th:text="${medico.apellido}"></td>
                             <td th:text="${medico.especialidad}"></td>
                             <td th:text="${medico.usuario.username}"></td>
                             <td>
@@ -125,6 +127,7 @@
                                         data-bs-target="#modalMedico"
                                         th:attr="data-id=${medico.id},
                                                  data-nombre=${medico.nombre},
+                                                 data-apellido=${medico.apellido},
                                                  data-especialidad=${medico.especialidad},
                                                  data-username=${medico.usuario.username}">
                                     Editar
@@ -191,7 +194,7 @@
                             <label>Medico</label>
                             <select name="medicoId" class="form-control" required>
                                 <option value="">Seleccione</option>
-                                <option th:each="medico : ${medicos}" th:value="${medico.id}" th:text="${medico.nombre}"></option>
+                                <option th:each="medico : ${medicos}" th:value="${medico.id}" th:text="${medico.nombreCompleto}"></option>
                             </select>
                             <div class="invalid-feedback"></div>
                         </div>
@@ -200,7 +203,7 @@
                             <input type="hidden" name="pacienteId">
                             <div class="input-group">
                                 <input type="text" name="documentoPaciente" class="form-control" maxlength="20" required>
-                                <button type="button" class="btn btn-main" id="btnBuscarPaciente" title="Buscar paciente">🔍</button>
+                                <button type="button" class="btn btn-main" id="btnBuscarPaciente" title="Buscar paciente">&#128269;</button>
                             </div>
                             <small id="resultadoPaciente" class="form-text"></small>
                             <div class="invalid-feedback"></div>
@@ -234,8 +237,22 @@
                         <div class="invalid-feedback"></div>
                     </div>
                     <div class="mb-3">
+                        <label>Apellido</label>
+                        <input type="text" name="apellido" class="form-control" maxlength="60" required>
+                        <div class="invalid-feedback"></div>
+                    </div>
+                    <div class="mb-3">
                         <label>Especialidad</label>
-                        <input type="text" name="especialidad" class="form-control" maxlength="60" required>
+                        <select name="especialidad" class="form-control" required>
+                            <option value="">Seleccione</option>
+                            <option value="Medicina general">Medicina general</option>
+                            <option value="Pediatria">Pediatria</option>
+                            <option value="Dermatologia">Dermatologia</option>
+                            <option value="Cardiologia">Cardiologia</option>
+                            <option value="Odontologia">Odontologia</option>
+                            <option value="Ginecologia">Ginecologia</option>
+                            <option value="Ortopedia">Ortopedia</option>
+                        </select>
                         <div class="invalid-feedback"></div>
                     </div>
                     <div class="mb-3">

@@ -15,8 +15,12 @@
             <div th:if="${errorGeneral}" class="alert alert-danger py-2" th:text="${errorGeneral}"></div>
 
             <div class="mb-3">
-                <input type="text" th:field="*{nombre}" class="form-control" th:classappend="${#fields.hasErrors('nombre')} ? 'is-invalid'" placeholder="Nombre completo" maxlength="60" required>
+                <input type="text" th:field="*{nombre}" class="form-control" th:classappend="${#fields.hasErrors('nombre')} ? 'is-invalid'" placeholder="Nombres" maxlength="60" required>
                 <div class="invalid-feedback" th:if="${#fields.hasErrors('nombre')}" th:errors="*{nombre}"></div>
+            </div>
+            <div class="mb-3">
+                <input type="text" th:field="*{apellido}" class="form-control" th:classappend="${#fields.hasErrors('apellido')} ? 'is-invalid'" placeholder="Apellidos" maxlength="60" required>
+                <div class="invalid-feedback" th:if="${#fields.hasErrors('apellido')}" th:errors="*{apellido}"></div>
             </div>
             <div class="mb-3">
                 <input type="text" th:field="*{documento}" class="form-control" th:classappend="${#fields.hasErrors('documento')} ? 'is-invalid'" placeholder="Documento" maxlength="20" required>

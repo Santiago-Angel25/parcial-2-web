@@ -4,7 +4,9 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
+import lombok.Data;
 
+@Data
 public class ConsultaRequest {
 
     @NotBlank(message = "El nombre del paciente es obligatorio")
@@ -33,32 +35,6 @@ public class ConsultaRequest {
     @NotNull(message = "Seleccione un paciente")
     private Long pacienteId;
 
-    public String getNombrePaciente() {
-        return nombrePaciente;
-    }
 
-    public String getMotivoConsulta() {
-        return motivoConsulta;
-    }
-
-    public Integer getNumeroConsultorio() {
-        return numeroConsultorio;
-    }
-
-    public String getHoraInicio() {
-        return horaInicio;
-    }
-
-    public String getHoraFin() {
-        return horaFin;
-    }
-
-    public Long getMedicoId() {
-        return medicoId;
-    }
-
-    public Long getPacienteId() {
-        return pacienteId;
-    }
 }
 
