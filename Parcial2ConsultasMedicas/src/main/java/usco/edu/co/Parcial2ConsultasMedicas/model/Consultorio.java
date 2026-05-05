@@ -5,8 +5,10 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import lombok.Data;
 
 @Entity
+@Data
 public class Consultorio {
 
     @Id
@@ -24,8 +26,6 @@ public class Consultorio {
         return numero;
     }
 
-    public void setNumero(Integer numero) {
-        this.numero = numero;
-    }
+
 }
 

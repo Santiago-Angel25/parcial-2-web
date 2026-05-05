@@ -7,7 +7,9 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Column;
+import lombok.Data;
 
+@Data
 @Entity
 public class Paciente {
 
@@ -26,45 +28,10 @@ public class Paciente {
     @JoinColumn(name = "usuario_id", unique = true)
     private Usuario usuario;
 
-    public Long getId() {
-        return id;
-    }
-
-    public String getNombre() {
-        return nombre;
-    }
-
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
-    }
-
-    public String getApellido() {
-        return apellido;
-    }
-
-    public void setApellido(String apellido) {
-        this.apellido = apellido;
-    }
-
     public String getNombreCompleto() {
         String nombres = nombre == null ? "" : nombre;
         String apellidos = apellido == null ? "" : apellido;
         return (nombres + " " + apellidos).trim();
     }
 
-    public String getDocumento() {
-        return documento;
-    }
-
-    public void setDocumento(String documento) {
-        this.documento = documento;
-    }
-
-    public Usuario getUsuario() {
-        return usuario;
-    }
-
-    public void setUsuario(Usuario usuario) {
-        this.usuario = usuario;
-    }
 }
