@@ -1,33 +1,40 @@
 package usco.edu.co.Parcial2ConsultasMedicas.dto;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 
 @Data
+@Schema(description = "Datos de registro de un paciente")
 public class PacienteRegistroRequest {
 
+    @Schema(description = "Nombres del paciente", example = "Juan")
     @NotBlank(message = "El nombre es obligatorio")
     @Size(max = 60, message = "El nombre no debe superar 60 caracteres")
     @Pattern(regexp = "^[A-Za-z ]+$", message = "El nombre solo debe contener letras y espacios")
     private String nombre;
 
+    @Schema(description = "Apellidos del paciente", example = "Perez")
     @NotBlank(message = "El apellido es obligatorio")
     @Size(max = 60, message = "El apellido no debe superar 60 caracteres")
     @Pattern(regexp = "^[A-Za-z ]+$", message = "El apellido solo debe contener letras y espacios")
     private String apellido;
 
+    @Schema(description = "Documento de identidad del paciente", example = "1076905343")
     @NotBlank(message = "El documento es obligatorio")
     @Size(max = 20, message = "El documento no debe superar 20 caracteres")
     @Pattern(regexp = "^[0-9]+$", message = "El documento solo debe contener numeros")
     private String documento;
 
+    @Schema(description = "Usuario de acceso del paciente", example = "juanperez")
     @NotBlank(message = "El usuario es obligatorio")
     @Size(max = 30, message = "El usuario no debe superar 30 caracteres")
     @Pattern(regexp = "^[A-Za-z0-9]+$", message = "El usuario solo debe contener letras y numeros")
     private String username;
 
+    @Schema(description = "Contrasena del paciente", example = "juanperez")
     @NotBlank(message = "La contrasena es obligatoria")
     @Size(max = 60, message = "La contrasena no debe superar 60 caracteres")
     private String password;
