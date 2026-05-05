@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Panel Medico</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link th:href="@{/css/style.css}" rel="stylesheet">
+</head>
+<body>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-2 sidebar">
+            <h4>Medico</h4>
+            <hr>
+            <a href="#">Mis Consultas</a>
+            <hr>
+            <a th:href="@{/logout}">Cerrar sesion</a>
+        </div>
+
+        <div class="col-md-10 p-4">
+            <div class="topbar mb-4 d-flex justify-content-between">
+                <h5>Panel Medico</h5>
+                <span>Consultas asignadas</span>
+            </div>
+
+            <div class="card card-custom p-4">
+                <h5 class="mb-3">Mis Consultas</h5>
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                        <tr>
+                            <th>Paciente</th>
+                            <th>Motivo</th>
+                            <th>Consultorio</th>
+                            <th>Horario</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="consulta : ${consultas}">
+                            <td th:text="${consulta.nombrePaciente}"></td>
+                            <td th:text="${consulta.motivoConsulta}"></td>
+                            <td th:text="${consulta.numeroConsultorio}"></td>
+                            <td>
+                                <span th:text="${consulta.horaInicio}"></span> -
+                                <span th:text="${consulta.horaFin}"></span>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
+
